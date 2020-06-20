@@ -1,0 +1,7 @@
+version: '3'
+services:
+  server_golang:
+    build:
+      context: .
+    ports:
+      - "8080:8080"

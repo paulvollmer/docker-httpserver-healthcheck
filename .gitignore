@@ -16,3 +16,4 @@
 
 # Project
 docker-httpserver-healthcheck
+examples/server-golang/server-golang
