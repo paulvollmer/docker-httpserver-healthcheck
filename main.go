@@ -12,7 +12,9 @@ var (
 )
 
 func main() {
-	os.Exit(healthcheck(healthcheckURL, healthcheckAgent))
+	var timeout = 100 * time.Millisecond
+
+	os.Exit(healthcheck(healthcheckURL, healthcheckAgent, timeout))
 }
 
 // healthcheck return an integer that will be used as the exit code.
@@ -22,21 +24,28 @@ func main() {
 //   0: success   - the container is healthy and ready for use
 //   1: unhealthy - the container is not working correctly
 //   2: reserved  - do not use this exit code
-func healthcheck(url, useragent string) int {
+func healthcheck(url, useragent string, timeout time.Duration) int {
 	client := &http.Client{
-		Timeout: 100 * time.Millisecond,
+		Timeout: timeout,
 	}
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return 1
 	}
+
 	req.Header.Set("User-Agent", useragent)
 	resp, err := client.Do(req)
+
 	if err != nil {
 		return 1
 	}
-	defer resp.Body.Close()
+
+	err = resp.Body.Close()
+	if err != nil {
+		return 1
+	}
+
 	if resp.StatusCode != http.StatusOK {
 		return 1
 	}
