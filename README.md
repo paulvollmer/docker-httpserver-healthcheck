@@ -35,7 +35,6 @@ RUN go build -ldflags "-s -w -X main.healthcheckURL=http://localhost:8080/check"
 FROM gcr.io/distroless/base
 COPY --from=healthcheck-build /healthcheck /healthcheck
 HEALTHCHECK --start-period=60s --interval=2m --timeout=1s /healthcheck
-
 # ...
 ```
 
