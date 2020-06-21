@@ -25,6 +25,11 @@ jobs:
     - name: Get dependencies
       run: |
         go get -v -t -d ./...
-        
+
+    - name: Lint
+      uses: golangci/golangci-lint-action@v1
+      with:
+        version: v1.26
+
     - name: Test
       run: go test -v .
