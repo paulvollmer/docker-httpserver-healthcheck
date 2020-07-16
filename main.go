@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"flag"
 	"net/http"
 	"os"
 	"time"
@@ -12,9 +14,9 @@ var (
 )
 
 func main() {
-	var timeout = 100 * time.Millisecond
-
-	os.Exit(healthcheck(healthcheckURL, healthcheckAgent, timeout))
+	timeout := flag.Duration("timeout", 100, "the request timeout in milliseconds")
+	flag.Parse()
+	os.Exit(healthcheck(healthcheckURL, healthcheckAgent, *timeout*time.Millisecond))
 }
 
 // healthcheck return an integer that will be used as the exit code.
@@ -29,7 +31,9 @@ func healthcheck(url, useragent string, timeout time.Duration) int {
 		Timeout: timeout,
 	}
 
-	req, err := http.NewRequest("GET", url, nil)
+	ctx := context.Background()
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+
 	if err != nil {
 		return 1
 	}
