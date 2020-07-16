@@ -27,9 +27,9 @@ jobs:
         go get -v -t -d ./...
 
     - name: Lint
-      uses: golangci/golangci-lint-action@v1
+      uses: golangci/golangci-lint-action@v2
       with:
-        version: v1.26
+        version: v1.28
 
     - name: Test
-      run: go test -v .
+      run: make test-cov

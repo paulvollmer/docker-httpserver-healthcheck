@@ -9,6 +9,7 @@ import (
 
 func TestHealthcheck(t *testing.T) {
 	userAgent := "Test"
+	timeout := 100 * time.Millisecond
 
 	t.Run("exitcode 0", func(t *testing.T) {
 		testserver := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
@@ -23,14 +24,27 @@ func TestHealthcheck(t *testing.T) {
 		}))
 		defer testserver.Close()
 
-		exitcode := healthcheck(testserver.URL+"/healthcheck", userAgent, 100*time.Millisecond)
+		exitcode := healthcheck(testserver.URL+"/healthcheck", userAgent, timeout)
 		if exitcode != 0 {
 			t.Error("exitcode should be 0")
 		}
 	})
 
+	t.Run("exitcode 1 statuscode not 200", func(t *testing.T) {
+		testserver := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+			rw.WriteHeader(http.StatusInternalServerError)
+			_, _ = rw.Write([]byte(`Server Error`))
+		}))
+		defer testserver.Close()
+
+		exitcode := healthcheck(testserver.URL, userAgent, timeout)
+		if exitcode != 1 {
+			t.Error("exitcode should be 1")
+		}
+	})
+
 	t.Run("exitcode 1", func(t *testing.T) {
-		exitcode := healthcheck("http://localhost:9999999", userAgent, 100*time.Millisecond)
+		exitcode := healthcheck("http://localhost:9999999", userAgent, timeout)
 		if exitcode != 1 {
 			t.Error("exitcode should be 1")
 		}
