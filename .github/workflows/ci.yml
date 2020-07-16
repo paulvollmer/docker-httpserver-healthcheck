@@ -32,4 +32,4 @@ jobs:
         version: v1.28
 
     - name: Test
-      run: go test -v .
+      run: make test-cov
