@@ -14,9 +14,9 @@ var (
 )
 
 func main() {
-	timeout := flag.Duration("timeout", 100, "the request timeout in milliseconds")
+	timeout := flag.Int("t", 100, "the request timeout in milliseconds")
 	flag.Parse()
-	os.Exit(healthcheck(healthcheckURL, healthcheckAgent, *timeout*time.Millisecond))
+	os.Exit(healthcheck(healthcheckURL, healthcheckAgent, time.Duration(*timeout)*time.Millisecond))
 }
 
 // healthcheck return an integer that will be used as the exit code.
