@@ -26,15 +26,16 @@ To include the `docker-httpserver-healthcheck` tool at your docker image you can
 # ...
 
 # The healtcheck tool build environment 
-FROM golang:1.14 as healthcheck-build
+FROM golang:1.14 as healthcheck-env
 RUN go get github.com/paulvollmer/docker-httpserver-healthcheck
 WORKDIR /go/src/github.com/paulvollmer/docker-httpserver-healthcheck
 RUN go build -ldflags "-s -w -X main.healthcheckURL=http://localhost:8080/check" -o /healthcheck
 
 # The final environment
 FROM gcr.io/distroless/base
-COPY --from=healthcheck-build /healthcheck /healthcheck
-HEALTHCHECK --start-period=60s --interval=2m --timeout=1s /healthcheck
+# Copy the healthcheck tool to the final container
+COPY --from=healthcheck-env /healthcheck /healthcheck
+HEALTHCHECK --start-period=10s --interval=5s --retries=3 CMD /healthcheck
 # ...
 ```
 
