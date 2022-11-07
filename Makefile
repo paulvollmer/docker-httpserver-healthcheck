@@ -3,8 +3,12 @@ all: fmt lint test
 fmt:
 	@gofmt -s -w .
 
+lint-prepare:
+	@ curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.50.1
 lint:
-	@golangci-lint run .
+	@ ./bin/golangci-lint run .
+lint-fix:
+	@ ./bin/golangci-lint run --fix .
 
 test:
 	@go test -v .
