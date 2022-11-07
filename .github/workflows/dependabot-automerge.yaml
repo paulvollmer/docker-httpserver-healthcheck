@@ -16,7 +16,7 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Enable auto-merge for Dependabot PRs
-        if: ${{steps.metadata.outputs.dependency-names == 'actions/setup-go' }}
+        if: ${{ steps.metadata.outputs.dependency-names == 'actions/setup-go' && steps.metadata.outputs.dependency-names == 'golangci/golangci-lint-action' }}
         run: gh pr merge --auto --merge "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
