@@ -1,4 +1,4 @@
-# docker-httpserver-healthcheck ![CI](https://github.com/paulvollmer/docker-httpserver-healthcheck/workflows/CI/badge.svg)
+# docker-httpserver-healthcheck [![CI](https://github.com/paulvollmer/docker-httpserver-healthcheck/actions/workflows/ci.yml/badge.svg)](https://github.com/paulvollmer/docker-httpserver-healthcheck/actions/workflows/ci.yml)
 
 To check if your Docker Container running a HTTP Server is healthy you can use the [Healthcheck](https://docs.docker.com/engine/reference/builder/#healthcheck) feature in Docker.    
 
