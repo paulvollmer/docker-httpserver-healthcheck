@@ -8,19 +8,23 @@ import (
 )
 
 func TestHealthcheck(t *testing.T) {
+	t.Parallel()
+
 	userAgent := "Test"
 	timeout := 100 * time.Millisecond
 
 	t.Run("exitcode 0", func(t *testing.T) {
-		testserver := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		t.Parallel()
+
+		testserver := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 			if req.URL.String() != "/healthcheck" {
 				t.Error("request path should be /healthcheck")
 			}
 			if req.Header.Get("User-Agent") != userAgent {
 				t.Error("request User-Agent should be", userAgent)
 			}
-			rw.WriteHeader(http.StatusOK)
-			_, _ = rw.Write([]byte(`OK`))
+			res.WriteHeader(http.StatusOK)
+			_, _ = res.Write([]byte(`OK`))
 		}))
 		defer testserver.Close()
 
@@ -31,9 +35,11 @@ func TestHealthcheck(t *testing.T) {
 	})
 
 	t.Run("exitcode 1 statuscode not 200", func(t *testing.T) {
-		testserver := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
-			rw.WriteHeader(http.StatusInternalServerError)
-			_, _ = rw.Write([]byte(`Server Error`))
+		t.Parallel()
+
+		testserver := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+			res.WriteHeader(http.StatusInternalServerError)
+			_, _ = res.Write([]byte(`Server Error`))
 		}))
 		defer testserver.Close()
 
@@ -44,6 +50,8 @@ func TestHealthcheck(t *testing.T) {
 	})
 
 	t.Run("exitcode 1", func(t *testing.T) {
+		t.Parallel()
+
 		exitcode := healthcheck("http://localhost:9999999", userAgent, timeout)
 		if exitcode != 1 {
 			t.Error("exitcode should be 1")

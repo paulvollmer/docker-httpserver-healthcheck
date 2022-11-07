@@ -4,3 +4,5 @@ linters:
     - testpackage
     - gochecknoglobals
     - gofumpt
+    # deprecated linter
+    - exhaustivestruct
